@@ -1,0 +1,17 @@
+{
+  "name": "basic-algorithms",
+  "version": "1.0.0",
+  "description": "",
+  "main": "arrayFilter.js",
+  "scripts": {
+    "start": "live-server",
+    "tsc": "tsc --watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.11.5",
+    "live-server": "^1.2.2",
+    "typescript": "^5.3.3"
+  }
+}
