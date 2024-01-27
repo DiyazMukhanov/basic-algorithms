@@ -2,23 +2,30 @@
 function arrayFilter(arr, cb) {
     let filteredArray = [];
     for (let i = 0; i < arr.length; i++) {
-        if (cb(arr[i])) {
+        if (cb(arr[i], i, arr)) {
             filteredArray.push(arr[i]);
         }
     }
     return filteredArray;
 }
-function arrayMap(arr, cb) {
+function arrayMap(arr, cb, thisArg = undefined) {
+    let callBackFunc;
+    if (thisArg) {
+        callBackFunc = cb.bind(thisArg);
+    }
+    else {
+        callBackFunc = cb;
+    }
     let mappedArray = [];
     for (let i = 0; i < arr.length; i++) {
-        mappedArray.push(cb(arr[i]));
+        mappedArray.push(callBackFunc(arr[i], i, arr));
     }
     return mappedArray;
 }
-function arrayReduce(arr, cb, initial) {
+function arrayReduce(arr, cb, ...initial) {
     let accumulator;
     let i;
-    if (initial) {
+    if (initial.length) {
         i = 0;
         accumulator = initial;
     }
@@ -33,50 +40,40 @@ function arrayReduce(arr, cb, initial) {
 }
 function arrayFlat(arr, depth = 1) {
     let result = [];
-    function extractFromArray(item) {
-        if (Array.isArray(item)) {
-            item.forEach((el) => {
-                result.push(el);
-            });
+    function flatten(arr, depth) {
+        for (let i = 0; i < arr.length; i++) {
+            if (Array.isArray(arr[i]) && depth > 0) {
+                flatten(arr[i], depth - 1);
+            }
+            else {
+                result.push(arr[i]);
+            }
         }
-        else {
-            result.push(item);
-        }
+        depth--;
     }
-    for (let i = 0; i < arr.length; i++) {
-        extractFromArray(arr[i]);
-    }
-    depth--;
-    if (depth < 1) {
-        return result;
-    }
-    else {
-        return arrayFlat(result, depth);
-    }
+    flatten(arr, depth);
+    return result;
 }
+const myArr = [1, 2, 3];
 function arrayFlatMap(arr, cb) {
     let mappedArray = [];
     for (let i = 0; i < arr.length; i++) {
-        mappedArray.push(cb(arr[i]));
-    }
-    console.log(mappedArray);
-    let result = [];
-    for (let i = 0; i < mappedArray.length; i++) {
-        if (Array.isArray(mappedArray[i])) {
-            mappedArray[i].forEach((el) => {
-                result.push(el);
+        const result = cb(arr[i]);
+        if (Array.isArray(result)) {
+            result.forEach(item => {
+                mappedArray.push(item);
             });
         }
         else {
-            result.push(arr[i]);
+            mappedArray.push(result);
         }
     }
-    return result;
+    return mappedArray;
 }
 function arrayEvery(arr, cb) {
     let result = true;
     for (let i = 0; i < arr.length; i++) {
-        if (!cb(arr[i])) {
+        if (!cb(arr[i], i, arr)) {
             result = false;
             break;
         }
@@ -86,7 +83,7 @@ function arrayEvery(arr, cb) {
 function arraySome(arr, cb) {
     let result = false;
     for (let i = 0; i < arr.length; i++) {
-        if (cb(arr[i])) {
+        if (cb(arr[i], i, arr)) {
             result = true;
             break;
         }

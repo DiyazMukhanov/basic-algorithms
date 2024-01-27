@@ -1,8 +1,8 @@
-function arrayFilter<T>(arr: T[], cb: (item: T) => boolean): T[] | [] {
+function arrayFilter<T>(arr: T[], cb: (item: T, index?: number, originalArr?: any[]) => boolean): T[] | [] {
     let filteredArray = []
 
     for (let i = 0; i < arr.length; i++) {
-        if (cb(arr[i])) {
+        if (cb(arr[i], i, arr)) {
             filteredArray.push(arr[i])
         }
     }
@@ -10,21 +10,29 @@ function arrayFilter<T>(arr: T[], cb: (item: T) => boolean): T[] | [] {
     return filteredArray
 }
 
-function arrayMap<T, A>(arr: T[], cb: (item: T) => A): A[] {
+function arrayMap<T, A>(arr: T[], cb: (item: T, index?: number, originalArr?: any[]) => A, thisArg = undefined): A[] {
+    let callBackFunc
+
+    if (thisArg) {
+        callBackFunc = cb.bind(thisArg)
+    } else {
+        callBackFunc = cb
+    }
+
     let mappedArray = []
 
     for (let i = 0; i < arr.length; i++) {
-        mappedArray.push(cb(arr[i]))
+        mappedArray.push(callBackFunc(arr[i], i, arr))
     }
 
     return mappedArray
 }
 
-function arrayReduce<T>(arr: T[], cb: (accum: any, item: T) => any, initial?: any) {
+function arrayReduce<T>(arr: T[], cb: (accum: any, item: T) => any, ...initial: any[]) {
     let accumulator
     let i
 
-    if (initial) {
+    if (initial.length) {
         i = 0;
         accumulator = initial
     } else {
@@ -42,57 +50,48 @@ function arrayReduce<T>(arr: T[], cb: (accum: any, item: T) => any, initial?: an
 function arrayFlat<T>(arr: any, depth = 1) {
     let result: any[] = []
 
-    function extractFromArray(item: any) {
-        if (Array.isArray(item)) {
-            item.forEach((el: any) => {
-                result.push(el)
-            })
-        } else {
-            result.push(item)
+    function flatten(arr: any[], depth: number) {
+        for (let i = 0; i < arr.length; i++) {
+
+            if (Array.isArray(arr[i]) && depth > 0) {
+                flatten(arr[i], depth - 1)
+            } else {
+                result.push(arr[i])
+            }
         }
+
+        depth--
     }
 
-    for (let i = 0; i < arr.length; i++) {
-        extractFromArray(arr[i])
-    }
+    flatten(arr, depth)
 
-    depth--
-
-    if (depth < 1) {
-        return result
-    } else {
-        return arrayFlat(result, depth)
-    }
+    return result
 }
+
+const myArr = [1, 2, 3]
 
 function arrayFlatMap(arr: any, cb: (item: any) => any) {
     let mappedArray = []
 
     for (let i = 0; i < arr.length; i++) {
-        mappedArray.push(cb(arr[i]))
-    }
+        const result = cb(arr[i]);
 
-    console.log(mappedArray)
-
-    let result: any[] = []
-
-    for (let i = 0; i < mappedArray.length; i++) {
-        if (Array.isArray(mappedArray[i])) {
-            mappedArray[i].forEach((el: any) => {
-                result.push(el)
+        if (Array.isArray(result)) {
+            result.forEach(item => {
+                mappedArray.push(item);
             })
         } else {
-            result.push(arr[i])
+            mappedArray.push(result)
         }
     }
 
-    return result
+    return mappedArray
 }
 
-function arrayEvery(arr: any, cb: (item: any) => boolean) {
+function arrayEvery(arr: any, cb: (item: any, index?: number, originalArr?: any[]) => boolean) {
     let result = true
     for (let i = 0; i < arr.length; i++) {
-        if (!cb(arr[i])) {
+        if (!cb(arr[i], i, arr)) {
             result = false
             break
         }
@@ -101,11 +100,11 @@ function arrayEvery(arr: any, cb: (item: any) => boolean) {
     return result
 }
 
-function arraySome(arr: any, cb: (item: any) => boolean) {
+function arraySome(arr: any, cb: (item: any, index?: number, originalArr?: any[]) => boolean) {
     let result = false
 
     for (let i = 0; i < arr.length; i++) {
-        if (cb(arr[i])) {
+        if (cb(arr[i], i, arr)) {
             result = true
             break
         }
