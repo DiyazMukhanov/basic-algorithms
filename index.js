@@ -1,5 +1,4 @@
-"use strict";
-function arrayFilter(arr, cb) {
+export function arrayFilter(arr, cb) {
     let filteredArray = [];
     for (let i = 0; i < arr.length; i++) {
         if (cb(arr[i], i, arr)) {
@@ -8,7 +7,7 @@ function arrayFilter(arr, cb) {
     }
     return filteredArray;
 }
-function arrayMap(arr, cb, thisArg = undefined) {
+export function arrayMap(arr, cb, thisArg = undefined) {
     let callBackFunc;
     if (thisArg) {
         callBackFunc = cb.bind(thisArg);
@@ -22,12 +21,12 @@ function arrayMap(arr, cb, thisArg = undefined) {
     }
     return mappedArray;
 }
-function arrayReduce(arr, cb, ...initial) {
+export function arrayReduce(arr, cb, ...initial) {
     let accumulator;
     let i;
     if (initial.length) {
         i = 0;
-        accumulator = initial;
+        accumulator = initial[0];
     }
     else {
         i = 1;
@@ -38,7 +37,7 @@ function arrayReduce(arr, cb, ...initial) {
     }
     return accumulator;
 }
-function arrayFlat(arr, depth = 1) {
+export function arrayFlat(arr, depth = 1) {
     let result = [];
     function flatten(arr, depth) {
         for (let i = 0; i < arr.length; i++) {
@@ -55,7 +54,7 @@ function arrayFlat(arr, depth = 1) {
     return result;
 }
 const myArr = [1, 2, 3];
-function arrayFlatMap(arr, cb) {
+export function arrayFlatMap(arr, cb) {
     let mappedArray = [];
     for (let i = 0; i < arr.length; i++) {
         const result = cb(arr[i]);
@@ -70,7 +69,7 @@ function arrayFlatMap(arr, cb) {
     }
     return mappedArray;
 }
-function arrayEvery(arr, cb) {
+export function arrayEvery(arr, cb) {
     let result = true;
     for (let i = 0; i < arr.length; i++) {
         if (!cb(arr[i], i, arr)) {
@@ -80,7 +79,7 @@ function arrayEvery(arr, cb) {
     }
     return result;
 }
-function arraySome(arr, cb) {
+export function arraySome(arr, cb) {
     let result = false;
     for (let i = 0; i < arr.length; i++) {
         if (cb(arr[i], i, arr)) {

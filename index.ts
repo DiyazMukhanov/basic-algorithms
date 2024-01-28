@@ -1,4 +1,4 @@
-function arrayFilter<T>(arr: T[], cb: (item: T, index?: number, originalArr?: any[]) => boolean): T[] | [] {
+export function arrayFilter<T>(arr: T[], cb: (item: T, index?: number, originalArr?: any[]) => boolean): T[] | [] {
     let filteredArray = []
 
     for (let i = 0; i < arr.length; i++) {
@@ -10,7 +10,7 @@ function arrayFilter<T>(arr: T[], cb: (item: T, index?: number, originalArr?: an
     return filteredArray
 }
 
-function arrayMap<T, A>(arr: T[], cb: (item: T, index?: number, originalArr?: any[]) => A, thisArg = undefined): A[] {
+export function arrayMap<T, A>(arr: T[], cb: (item: T, index?: number, originalArr?: any[]) => A, thisArg = undefined): A[] {
     let callBackFunc
 
     if (thisArg) {
@@ -28,13 +28,13 @@ function arrayMap<T, A>(arr: T[], cb: (item: T, index?: number, originalArr?: an
     return mappedArray
 }
 
-function arrayReduce<T>(arr: T[], cb: (accum: any, item: T) => any, ...initial: any[]) {
+export function arrayReduce<T>(arr: T[], cb: (accum: any, item: T) => any, ...initial: any[]) {
     let accumulator
     let i
 
     if (initial.length) {
         i = 0;
-        accumulator = initial
+        accumulator = initial[0]
     } else {
         i = 1;
         accumulator = arr[0]
@@ -47,7 +47,7 @@ function arrayReduce<T>(arr: T[], cb: (accum: any, item: T) => any, ...initial: 
     return accumulator
 }
 
-function arrayFlat<T>(arr: any, depth = 1) {
+export function arrayFlat<T>(arr: any, depth = 1) {
     let result: any[] = []
 
     function flatten(arr: any[], depth: number) {
@@ -70,7 +70,7 @@ function arrayFlat<T>(arr: any, depth = 1) {
 
 const myArr = [1, 2, 3]
 
-function arrayFlatMap(arr: any, cb: (item: any) => any) {
+export function arrayFlatMap(arr: any, cb: (item: any) => any) {
     let mappedArray = []
 
     for (let i = 0; i < arr.length; i++) {
@@ -88,7 +88,7 @@ function arrayFlatMap(arr: any, cb: (item: any) => any) {
     return mappedArray
 }
 
-function arrayEvery(arr: any, cb: (item: any, index?: number, originalArr?: any[]) => boolean) {
+export function arrayEvery(arr: any, cb: (item: any, index?: number, originalArr?: any[]) => boolean) {
     let result = true
     for (let i = 0; i < arr.length; i++) {
         if (!cb(arr[i], i, arr)) {
@@ -100,7 +100,7 @@ function arrayEvery(arr: any, cb: (item: any, index?: number, originalArr?: any[
     return result
 }
 
-function arraySome(arr: any, cb: (item: any, index?: number, originalArr?: any[]) => boolean) {
+export function arraySome(arr: any, cb: (item: any, index?: number, originalArr?: any[]) => boolean) {
     let result = false
 
     for (let i = 0; i < arr.length; i++) {
