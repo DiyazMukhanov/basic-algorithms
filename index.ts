@@ -113,4 +113,71 @@ export function arraySome(arr: any, cb: (item: any, index?: number, originalArr?
     return result
 }
 
+// Lodash methods
+
+function objectPick<T extends object>(obj: T, path: string[]): Partial<T> {
+    const result: Partial<T> = {}
+
+    for (let i = 0; i < path.length; i++) {
+        for (const key in obj) {
+            if (path[i] === key) {
+                result[key] = obj[key]
+            }
+        }
+    }
+
+    return result
+}
+
+function objectOmit<T extends object>(obj: T, path: string[]): Partial<T> {
+    const result: Partial<T> = {}
+
+    for (const key in obj) {
+        let foundInPath = false
+
+        for (let i = 0; i < path.length; i++) {
+            if (key === path[i]) {
+                foundInPath = true
+            }
+        }
+
+        if (!foundInPath) {
+            result[key] = obj[key]
+        }
+    }
+
+    return result
+}
+
+function objectGet(obj: any, path: string[], defaultValue: any): any {
+    let result: any
+
+    for (let i = 0; i < path.length; i++) {
+        let pathElement: string | number
+
+        if (Array.isArray(result)) {
+            pathElement = Number(path[i])
+        } else {
+            pathElement = path[i]
+        }
+
+        if (i === 0) {
+            result = obj[pathElement]
+        } else {
+            if (i < path.length - 1 && !result[pathElement]) {
+                result = defaultValue
+                break
+            }
+
+            result = result[pathElement]
+        }
+    }
+
+    return result
+}
+
+const myObj = { lang: [{ python: { java: 3 } }] }
+
+
+
 

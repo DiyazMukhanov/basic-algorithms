@@ -89,3 +89,54 @@ export function arraySome(arr, cb) {
     }
     return result;
 }
+// Lodash methods
+function objectPick(obj, path) {
+    const result = {};
+    for (let i = 0; i < path.length; i++) {
+        for (const key in obj) {
+            if (path[i] === key) {
+                result[key] = obj[key];
+            }
+        }
+    }
+    return result;
+}
+function objectOmit(obj, path) {
+    const result = {};
+    for (const key in obj) {
+        let foundInPath = false;
+        for (let i = 0; i < path.length; i++) {
+            if (key === path[i]) {
+                foundInPath = true;
+            }
+        }
+        if (!foundInPath) {
+            result[key] = obj[key];
+        }
+    }
+    return result;
+}
+function objectGet(obj, path, defaultValue) {
+    let result;
+    for (let i = 0; i < path.length; i++) {
+        let pathElement;
+        if (Array.isArray(result)) {
+            pathElement = Number(path[i]);
+        }
+        else {
+            pathElement = path[i];
+        }
+        if (i === 0) {
+            result = obj[pathElement];
+        }
+        else {
+            if (i < path.length - 1 && !result[pathElement]) {
+                result = defaultValue;
+                break;
+            }
+            result = result[pathElement];
+        }
+    }
+    return result;
+}
+const myObj = { lang: [{ python: { java: 3 } }] };
