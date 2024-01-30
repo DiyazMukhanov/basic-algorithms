@@ -68,8 +68,6 @@ export function arrayFlat<T>(arr: any, depth = 1) {
     return result
 }
 
-const myArr = [1, 2, 3]
-
 export function arrayFlatMap(arr: any, cb: (item: any) => any) {
     let mappedArray = []
 
@@ -176,7 +174,52 @@ function objectGet(obj: any, path: string[], defaultValue: any): any {
     return result
 }
 
-const myObj = { lang: [{ python: { java: 3 } }] }
+function objectSet(obj: any, path: string[], value: any): any {
+
+    let result
+
+    for (let i = 0; i < path.length - 1; i++) {
+        if (i === 0) {
+            result = obj[path[i]]
+        } else {
+            if (result) {
+                result = result[path[i]]
+                if (typeof result !== 'object') {
+                    result[path[i] = result[path[i + 1]]]
+                }
+                console.log(i, result)
+            }
+        }
+    }
+
+    result[path[path.length - 1]] = value
+
+    return obj
+}
+
+function arrayDifference(arr: any[], values: any[]) {
+    let result
+
+    for (let i = 0; i < arr.length; i++) {
+        for (let j = 0; j < values.length; j++) {
+            if (arr[i] === values[j]) {
+                result = arr.filter(item => item !== arr[i])
+            }
+        }
+    }
+
+    return result
+}
+
+function arrayIntersection(...arrays: any[]) {
+    let result = arrays.reduce((accum: any[], array: any[]) => {
+        return accum.filter(item => array.includes(item))
+    })
+
+    return result
+}
+
+
 
 
 

@@ -53,7 +53,6 @@ export function arrayFlat(arr, depth = 1) {
     flatten(arr, depth);
     return result;
 }
-const myArr = [1, 2, 3];
 export function arrayFlatMap(arr, cb) {
     let mappedArray = [];
     for (let i = 0; i < arr.length; i++) {
@@ -139,4 +138,39 @@ function objectGet(obj, path, defaultValue) {
     }
     return result;
 }
-const myObj = { lang: [{ python: { java: 3 } }] };
+function objectSet(obj, path, value) {
+    let result;
+    for (let i = 0; i < path.length - 1; i++) {
+        if (i === 0) {
+            result = obj[path[i]];
+        }
+        else {
+            if (result) {
+                result = result[path[i]];
+                if (typeof result !== 'object') {
+                    result[path[i] = result[path[i + 1]]];
+                }
+                console.log(i, result);
+            }
+        }
+    }
+    result[path[path.length - 1]] = value;
+    return obj;
+}
+function arrayDifference(arr, values) {
+    let result;
+    for (let i = 0; i < arr.length; i++) {
+        for (let j = 0; j < values.length; j++) {
+            if (arr[i] === values[j]) {
+                result = arr.filter(item => item !== arr[i]);
+            }
+        }
+    }
+    return result;
+}
+function arrayIntersection(...arrays) {
+    let result = arrays.reduce((accum, array) => {
+        return accum.filter(item => array.includes(item));
+    });
+    return result;
+}
