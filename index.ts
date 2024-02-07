@@ -219,6 +219,157 @@ function arrayIntersection(...arrays: any[]) {
     return result
 }
 
+function invertObject(obj: Object) {
+    const result = {}
+    for (let prop in obj) {
+        result[obj[prop]] = prop
+    }
+
+    return result
+}
+
+function zip(...arrays: any[]) {
+    let result = []
+
+    for (let i = 0; i < arrays.length; i++) {
+        result.push([])
+    }
+
+    for (let i = 0; i < arrays.length; i++) {
+        for (let j = 0; j < arrays[i].length; j++) {
+            result[j].push(arrays[i][j])
+        }
+    }
+
+    return result
+}
+
+function unzip(...arrays: any[]) {
+    let result
+
+    for (let i = 0; i < arrays.length; i++) {
+        result.push([])
+    }
+
+    for (let i = 0; i < arrays.length; i++) {
+        for (let j = 0; j < arrays[i].length; j++) {
+            result[j].push(arrays[i][j])
+        }
+    }
+
+    return result
+}
+
+function chunk(arr, size) {
+    let result = [[]]
+
+    for (let i = 0; i < arr.length; i++) {
+        if (result[result.length - 1].length < size) {
+            result[result.length - 1].push(arr[i])
+        } else {
+            result.push([])
+            result[result.length - 1].push(arr[i])
+        }
+    }
+
+    return result
+}
+
+function groupBy(arr, cb) {
+    let result = {}
+
+    for (let i = 0; i < arr.length; i++) {
+        let resultKey = cb(arr[i])
+        if (result[resultKey]) {
+            result[resultKey].push(arr[i])
+        } else {
+            result[resultKey] = []
+            result[resultKey].push(arr[i])
+        }
+    }
+
+    return result
+}
+
+function camelCase(str: string) {
+    let result = [];
+    let indexOfSpace: number;
+    let strArr = str.split('');
+    for (let i = 0; i < strArr.length; i++) {
+        if (i === 0) {
+            result.push(strArr[0].toLowerCase());
+        } else {
+            if (strArr[i] === ' ') {
+                result.push(strArr[i + 1].toUpperCase());
+                indexOfSpace = i;
+            } else {
+                if (i !== indexOfSpace + 1) result.push(strArr[i].toLowerCase());
+            }
+        }
+    }
+
+    return result.join('');
+}
+
+function kebabCase(str: string) {
+    let result = [];
+    let strArr = str.split('');
+    for (let i = 0; i < strArr.length; i++) {
+        if (i === 0) {
+            result.push(strArr[0].toLowerCase());
+        } else {
+            if (strArr[i] === ' ') {
+                result.push('-');
+            } else {
+                result.push(strArr[i].toLowerCase());
+            }
+        }
+    }
+
+    return result.join('');
+}
+
+function snakeCase(str: string) {
+    let result = [];
+    let strArr = str.split('');
+    for (let i = 0; i < strArr.length; i++) {
+        if (i === 0) {
+            result.push(strArr[0].toLowerCase());
+        } else {
+            if (strArr[i] === ' ') {
+                result.push('_');
+            } else {
+                result.push(strArr[i].toLowerCase());
+            }
+        }
+    }
+
+    return result.join('');
+}
+
+function debounce(func, delay) {
+    let timerId
+    return function (...args) {
+        clearTimeout(timerId)
+        timerId = setTimeout(() => func(...args), delay)
+    }
+}
+
+function throttle(func, delay) {
+    let lastCall = 0
+
+    return function (...args) {
+        let now = new Date().getTime()
+        if (now - lastCall > delay) {
+            func(...args)
+            lastCall = now
+        }
+    }
+}
+
+
+
+
 
 
 
