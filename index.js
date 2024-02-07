@@ -1,26 +1,32 @@
-"use strict";
-function arrayFilter(arr, cb) {
+export function arrayFilter(arr, cb) {
     let filteredArray = [];
     for (let i = 0; i < arr.length; i++) {
-        if (cb(arr[i])) {
+        if (cb(arr[i], i, arr)) {
             filteredArray.push(arr[i]);
         }
     }
     return filteredArray;
 }
-function arrayMap(arr, cb) {
+export function arrayMap(arr, cb, thisArg = undefined) {
+    let callBackFunc;
+    if (thisArg) {
+        callBackFunc = cb.bind(thisArg);
+    }
+    else {
+        callBackFunc = cb;
+    }
     let mappedArray = [];
     for (let i = 0; i < arr.length; i++) {
-        mappedArray.push(cb(arr[i]));
+        mappedArray.push(callBackFunc(arr[i], i, arr));
     }
     return mappedArray;
 }
-function arrayReduce(arr, cb, initial) {
+export function arrayReduce(arr, cb, ...initial) {
     let accumulator;
     let i;
-    if (initial) {
+    if (initial.length) {
         i = 0;
-        accumulator = initial;
+        accumulator = initial[0];
     }
     else {
         i = 1;
@@ -31,65 +37,140 @@ function arrayReduce(arr, cb, initial) {
     }
     return accumulator;
 }
-function arrayFlat(arr, depth = 1) {
+export function arrayFlat(arr, depth = 1) {
     let result = [];
-    function extractFromArray(item) {
-        if (Array.isArray(item)) {
-            item.forEach((el) => {
-                result.push(el);
-            });
+    function flatten(arr, depth) {
+        for (let i = 0; i < arr.length; i++) {
+            if (Array.isArray(arr[i]) && depth > 0) {
+                flatten(arr[i], depth - 1);
+            }
+            else {
+                result.push(arr[i]);
+            }
         }
-        else {
-            result.push(item);
-        }
+        depth--;
     }
-    for (let i = 0; i < arr.length; i++) {
-        extractFromArray(arr[i]);
-    }
-    depth--;
-    if (depth < 1) {
-        return result;
-    }
-    else {
-        return arrayFlat(result, depth);
-    }
-}
-function arrayFlatMap(arr, cb) {
-    let mappedArray = [];
-    for (let i = 0; i < arr.length; i++) {
-        mappedArray.push(cb(arr[i]));
-    }
-    console.log(mappedArray);
-    let result = [];
-    for (let i = 0; i < mappedArray.length; i++) {
-        if (Array.isArray(mappedArray[i])) {
-            mappedArray[i].forEach((el) => {
-                result.push(el);
-            });
-        }
-        else {
-            result.push(arr[i]);
-        }
-    }
+    flatten(arr, depth);
     return result;
 }
-function arrayEvery(arr, cb) {
+export function arrayFlatMap(arr, cb) {
+    let mappedArray = [];
+    for (let i = 0; i < arr.length; i++) {
+        const result = cb(arr[i]);
+        if (Array.isArray(result)) {
+            result.forEach(item => {
+                mappedArray.push(item);
+            });
+        }
+        else {
+            mappedArray.push(result);
+        }
+    }
+    return mappedArray;
+}
+export function arrayEvery(arr, cb) {
     let result = true;
     for (let i = 0; i < arr.length; i++) {
-        if (!cb(arr[i])) {
+        if (!cb(arr[i], i, arr)) {
             result = false;
             break;
         }
     }
     return result;
 }
-function arraySome(arr, cb) {
+export function arraySome(arr, cb) {
     let result = false;
     for (let i = 0; i < arr.length; i++) {
-        if (cb(arr[i])) {
+        if (cb(arr[i], i, arr)) {
             result = true;
             break;
         }
     }
+    return result;
+}
+// Lodash methods
+function objectPick(obj, path) {
+    const result = {};
+    for (let i = 0; i < path.length; i++) {
+        for (const key in obj) {
+            if (path[i] === key) {
+                result[key] = obj[key];
+            }
+        }
+    }
+    return result;
+}
+function objectOmit(obj, path) {
+    const result = {};
+    for (const key in obj) {
+        let foundInPath = false;
+        for (let i = 0; i < path.length; i++) {
+            if (key === path[i]) {
+                foundInPath = true;
+            }
+        }
+        if (!foundInPath) {
+            result[key] = obj[key];
+        }
+    }
+    return result;
+}
+function objectGet(obj, path, defaultValue) {
+    let result;
+    for (let i = 0; i < path.length; i++) {
+        let pathElement;
+        if (Array.isArray(result)) {
+            pathElement = Number(path[i]);
+        }
+        else {
+            pathElement = path[i];
+        }
+        if (i === 0) {
+            result = obj[pathElement];
+        }
+        else {
+            if (i < path.length - 1 && !result[pathElement]) {
+                result = defaultValue;
+                break;
+            }
+            result = result[pathElement];
+        }
+    }
+    return result;
+}
+function objectSet(obj, path, value) {
+    let result;
+    for (let i = 0; i < path.length - 1; i++) {
+        if (i === 0) {
+            result = obj[path[i]];
+        }
+        else {
+            if (result) {
+                result = result[path[i]];
+                if (typeof result !== 'object') {
+                    result[path[i] = result[path[i + 1]]];
+                }
+                console.log(i, result);
+            }
+        }
+    }
+    result[path[path.length - 1]] = value;
+    return obj;
+}
+function arrayDifference(arr, values) {
+    let result;
+    for (let i = 0; i < arr.length; i++) {
+        for (let j = 0; j < values.length; j++) {
+            if (arr[i] === values[j]) {
+                result = arr.filter(item => item !== arr[i]);
+            }
+        }
+    }
+    return result;
+}
+function arrayIntersection(...arrays) {
+    let result = arrays.reduce((accum, array) => {
+        return accum.filter(item => array.includes(item));
+    });
     return result;
 }
